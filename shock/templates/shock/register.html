@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+{% load static %}
+<link rel="stylesheet" href="{% static 'shock/style.css' %}" >
+<body>
+
+<form action="{% url 'createAccount' %}" method="post">
+    {% csrf_token %}
+    <label>用户名：</label>
+    <input type="text" name="username">
+    <label>密码：</label>
+    <input type="password" name="password" id="pwd1">
+    <label>重复密码：</label>
+    <input type="password" name="password2" id="pwd2" onkeyup="validate()">
+    <label id="tishi">
+        {% if message %}
+        {{ message }}
+        {% endif %}
+    </label>
+    <input type="submit" id="submit" value="注册并登录">
+</form>
+
+{% if request.session.shock_set%}
+    <ul class="shock_list" style="height: auto;border: 0;">
+        {% for shock_information in request.session.shock_set %}
+            <a href="{% url 'detail' shock_information.code %}" style="color: black">
+                <li style="" >{{ shock_information.name }}({{ shock_information.code }})</li>
+            </a>
+        {% endfor %}
+    </ul>
+{% endif %}
+<script>
+    function validate() {
+        var pwd1 = document.getElementById("pwd1").value;
+        var pwd2 = document.getElementById("pwd2").value;
+        if (pwd1 != pwd2) {
+            document.getElementById("tishi").innerHTML = "<font color='red'>两次密码不同</font>";
+            document.getElementById("submit").disabled = true;
+        } else {
+            document.getElementById("tishi").innerHTML="<font color='green'>两次密码相同</font>";
+            document.getElementById("submit").disabled = false;
+        }
+    }
+   
+
+</script>
+</body>
+</html>

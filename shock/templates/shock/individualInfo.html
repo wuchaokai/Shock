@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>您好，{{ request.user }}</h1>
+<h2>您一共拥有：</h2>
+{% for shock in individualInfo %}
+    <h2>{{ shock.shock_name }}:{{ shock.num }}股   成本：{{ shock.cost }}  现价：{{ shock.now_price }} 盈利：{{ shock.profit }}
+
+    </h2>
+{% endfor %}
+</body>
+</html>

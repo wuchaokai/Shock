@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+{% load static %}
+<link type="text/css" rel="stylesheet" href="{% static 'shock/style.css' %}">
+<body>
+<div>
+    <div></div>
+    <div>
+        {% if not request.user.is_authenticated %}
+         <a href="{% url 'register' %}">注册</a>
+        <form action="{% url 'login'  %}" method="post">
+            {% csrf_token %}
+            <label for="username">username:</label>
+            <input type="text" name="username">
+            <label for="password">password:</label>
+            <input type="password" name="password">
+            <input type="submit" value="登录">
+        </form>
+        {% else%}
+            <a href="{% url 'individual' %}">您好，{{ request.user }}</a>
+            <a href="{% url 'loginexit' %}">退出登录</a>
+        {% endif %}
+        {% if message %}
+            <label>{{ message }}</label>
+        {% endif %}
+    </div>
+</div>
+<form action="{% url 'info' %}" method="post">
+    {% csrf_token %}
+    <label for="shock_name:" >股票名称</label>
+    <input type="text" name="shock_name">
+    <label for="shock_code">股票代码</label>
+    <input type="text" name="shock_code">
+    <label for="begin_time">开始日期</label>
+    <input type="text" name="begin_time">
+    <label for="end_time">截止日期</label>
+    <input type="text" name="end_time">
+    <input type="submit" value="提交">
+</form>
+{% if historyInfo %}
+    {% for his in historyInfo %}
+        <ul>
+        {% for key,value in his.items %}
+            <li>{{ key }}:{{ value }}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+{% elif detailContent %}
+    {% if  request.user.is_authenticated %}
+    <form action="{% url 'trade' code%}" method="post">
+    {% csrf_token %}
+    <label>买入（股）：</label>
+    <input type="text" name="buy_num" value="0">
+    <label>卖出（股）：</label>
+    <input type="text" name="sell_num" value="0">
+    <input type="submit" value="确定">
+        <label>{{ erromessage }}</label>
+    </form>
+    {% endif %}
+    <ul style="height:auto;border: 0">
+    {% for key,imgurl in imageUrl.items %}
+
+        <div class="image" ><img src="{{ imgurl }}" alt="" ></div>
+    {% endfor %}
+    {% for key,value in detailContent.items %}
+        <li>{{ key }}:{{ value }}</li>
+    {% endfor %}
+    </ul>
+{% elif request.session.shock_set%}
+    <ul class="shock_list" style="height: auto;border: 0;">
+        {% for shock_information in request.session.shock_set %}
+            <a href="{% url 'detail' shock_information.code %}" style="color: black">
+                <li>{{ shock_information.name }}({{ shock_information.code }})</li>
+            </a>
+        {% endfor %}
+    </ul>
+
+
+{% endif %}
+
+
+
+</body>
+</html>
